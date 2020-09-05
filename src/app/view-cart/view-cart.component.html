@@ -1,0 +1,71 @@
+<div class="row">
+  <div class="col">
+    <h2>
+      Ordered Items
+      <a class="p-1 float-right"><i class="fas fa-times"></i></a>
+    </h2>
+    <table class="table table-sm table-bordered table-hover">
+      <tbody *ngFor="let c of cartCatNSizes">
+        <tr class="lead bg-warning">
+          <td colspan="18"><strong>{{ c.category }}</strong></td>
+        </tr>
+        <tr class="bg-light">
+          <td></td>
+          <td class="text-center">Item</td>
+          <td class="text-center">Color</td>
+          <td class="text-center">{{ c.s1 }}</td>
+          <td class="text-center">{{ c.s2 }}</td>
+          <td class="text-center">{{ c.s3 }}</td>
+          <td class="text-center">{{ c.s4 }}</td>
+          <td class="text-center">{{ c.s5 }}</td>
+          <td class="text-center">{{ c.s6 }}</td>
+          <td class="text-center">{{ c.s7 }}</td>
+          <td class="text-center">{{ c.s8 }}</td>
+          <td class="text-center">{{ c.s9 }}</td>
+          <td class="text-center">{{ c.s10 }}</td>
+          <td class="text-center">{{ c.s11 }}</td>
+          <td class="text-center">{{ c.s12 }}</td>
+          <td class="text-center">Total</td>
+          <td class="text-center">MRP</td>
+          <td></td>
+        </tr>
+        <tr *ngFor="let i of cartItems | filter:{'subCatID': c.subCatID}">
+          <td class="text-center">
+            <img src="{{ IMG_URL }}{{ i.groupID }}.jpeg" height="100px" alt="">
+          </td>
+          <td>{{ i.prodName }}</td>
+          <td>{{ i.color }}</td>
+          <td class="text-right">{{ i.qty1 || '-' }}</td>
+          <td class="text-right">{{ i.qty2 || '-' }}</td>
+          <td class="text-right">{{ i.qty3 || '-' }}</td>
+          <td class="text-right">{{ i.qty4 || '-' }}</td>
+          <td class="text-right">{{ i.qty5 || '-' }}</td>
+          <td class="text-right">{{ i.qty6 || '-' }}</td>
+          <td class="text-right">{{ i.qty7 || '-' }}</td>
+          <td class="text-right">{{ i.qty8 || '-' }}</td>
+          <td class="text-right">{{ i.qty9 || '-' }}</td>
+          <td class="text-right">{{ i.qty10 || '-' }}</td>
+          <td class="text-right">{{ i.qty11 || '-' }}</td>
+          <td class="text-right">{{ i.qty12 || '-' }}</td>
+          <td class="text-right">{{ i.totQty }}</td>
+          <td class="text-right"><em>&#8377; {{ i.mrp | number }}/-</em></td>
+          <td>
+            <button class="btn btn-small bg-warning" (click)="deleteItem(i)"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <span class="float-right bg-warning rounded-pill p-2">
+      <button class="btn btn-lg btn-success rounded-pill" (click)="sendOrderMail()">
+        <i class="fab fa-opencart"></i> 45
+        Finish
+      </button>
+      <button class="order rounded-pill" [ngClass]="orderItems.submitted ? 'animate' : ''">
+        <span class="default">Complete Order</span>
+        <span [ngClass]="!orderItems.success ? 'success' : ''">Order Placed<svg viewbox="0 0 12 10"><polyline points="1.5 6 4.5 9 10.5 1"></polyline></svg></span><div class="box"></div><div class="truck"><div class="back"></div><div class="front"><div class="window"></div></div><div class="light top"></div><div class="light bottom"></div></div><div class="lines"></div>
+      </button>
+    </span>
+  </div>
+</div>
+
+<div [innerHTML]="orderMailTemplate | safeHtml"></div>

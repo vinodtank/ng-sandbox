@@ -1,0 +1,52 @@
+.order-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-color: #333;
+}
+  
+.img-wrapper {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+.header {
+  position: absolute;
+  width: 100%;
+  padding: 10px;
+  top: 0;
+  min-height: 10vh;
+}
+
+.bg-red {
+  background-color: #e03837;
+  color: #fff;
+  opacity: 0.65;
+}
+
+.bg-red:hover, .footer:hover {
+  opacity: 1;
+}
+
+.footer {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  min-height: 15vh;
+  background-color: #333;   
+  opacity: 0.5;
+}
+
+.col input[type=text] {
+  padding: 0 5px;
+}
+
+.disabled {
+  background-color: #333;
+}
+
+.stock-qty {
+  font-size: 1.25rem;
+  margin-bottom: 0 !important;
+}

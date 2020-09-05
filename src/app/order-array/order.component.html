@@ -1,0 +1,390 @@
+<!-- order -->
+<div class="bg row justify-content-md-center animated fadeIn delay-1s" 
+[ngClass]="ls.bg"  
+*ngIf="!showOrderItems">
+  <div class="col-4 h-75 mt-3 box">
+    <h3>{{ ls.currentDiv.name }}</h3>
+    <h2>New Order</h2>
+    <form [formGroup]="orderForm">
+      <div class="form-group">
+        <label for="transID">Order#</label>
+        <input type="text" class="form-control form-control-lg" name="transID" id="transID" formControlName="transID" 
+        [attr.disabled]="true">
+      </div>
+      <div class="form-group">
+        <label for="transDt">Order Dt</label>
+        <input type="text" class="form-control form-control-lg" name="transDt" id="transDt" value="{{ transDt | date: 'dd/MM/yyyy' }}" disabled>
+      </div>
+      <div class="form-group">
+        <label for="bookedBy">Booked By</label>
+        <input type="text" class="form-control form-control-lg" name="bookedBy" id="bookedBy" formControlName="orderBookedBy" 
+        [attr.disabled]="true">
+      </div>
+      <div class="form-group">
+        <label for="">Select Party</label>
+        <div class="ng-autocomplete">
+          <ng-autocomplete 
+            [data]="customers"
+            [searchKeyword]="keyword"
+            (selected)='selectEvent($event)'
+            (inputChanged)='onChangeSearch($event)'
+            (inputFocused)='onFocused($event)'
+            (inputCleared)='onCleared($event)'
+            [itemTemplate]="itemTemplate"
+            [notFoundTemplate]="notFoundTemplate"
+            autofocus>  
+          </ng-autocomplete>
+           
+          <ng-template #itemTemplate let-item class="form-control form-control-lg">
+            <a [innerHTML]="item.name"></a>
+          </ng-template>
+           
+          <ng-template #notFoundTemplate let-notFound>
+            <div [innerHTML]="notFound"></div>
+          </ng-template>
+        </div>
+      </div>
+    </form>
+    <!-- contact information -->
+    <form [formGroup]="contactForm" *ngIf="this.contactForm.controls.acID.value">
+      <div class="form-group">
+        <label for="contactPerson">Contact Person</label>
+        <input type="text" class="form-control form-control-lg" name="contactPerson" id="contactPerson" formControlName="contactPerson">
+      </div>
+      <div class="form-group">
+        <label for="email">E-Mail</label>
+        <input type="text" class="form-control form-control-lg" [ngClass]="this.ls.validateEmail(this.contactForm.controls.email.value) ? 'is-valid' : 'is-invalid'" name="email" id="email" formControlName="email">
+        <div id="email" class="valid-feedback">
+          Looks good!
+        </div>
+        <div id="email" class="invalid-feedback">
+          Please provide a valid email.
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="mob1">Mobile</label>
+        <input type="text" class="form-control form-control-lg" name="mob1" id="mob1" formControlName="mob1">
+      </div>
+    </form>
+    <div class="form-group">
+      <button class="btn btn-block btn-lg btn-danger rounded-pill"
+        [disabled]="this.orderForm.invalid"
+        (click)="submitOrder()">
+        Start Booking
+        <i class="fas fa-circle-notch fa-spin" *ngIf="order.submitted"></i>
+      </button>
+    </div>
+    <div class="alert alert-danger" role="alert" *ngIf="order.error">
+      {{ order.error }}
+    </div>
+  </div>
+</div>
+<!-- order items -->
+<div class="row" *ngIf="showOrderItems && !viewCart">
+  <div class="col order-wrapper">
+    <!-- item image -->
+    <div class="row" *ngIf="items.length">
+      <div class="col img-wrapper text-center">
+        <img src="{{ IMG_URL }}{{ selectedItem.groupID }}.jpeg" height="100%" alt="">
+      </div>
+    </div>
+    <!-- header -->
+    <div class="row header bg-red" *ngIf="showHideNav">
+      <div class="col">
+        <div class="row pt-1">
+          <div class="col-8">
+            <h3>{{ ls.currentDiv.name }} #{{ orderForm.controls.transID.value }} - {{ this.transDt | date: 'dd/MM/yyyy' }}</h3>
+            <!-- <br> -->
+            <!-- {{ IMG_URL }} -->
+          </div>
+        </div>
+        <div class="row" *ngIf="loading.categories == true">
+          <div class="col-12">
+            <h2><i class="fas fa-circle-notch fa-spin"></i> Loading Categories...</h2>
+          </div>
+        </div>
+        <div class="form-row" *ngIf="loading.categories == false">
+          <div class="col-4">
+            <select class="form-control form-control-lg"
+            name="categories" id="categories"
+            (change)="selectCategory($event)">
+              <option [ngValue]="" disabled selected>Select Category</option>
+              <option *ngFor="let c of categories" [ngValue]="c.id">{{ c.name }}</option>
+            </select>
+          </div>
+          <div class="col-4">
+            <input type="button" class="btn btn-block btn-lg btn-success" value="View" 
+            (click)="getProductSequence()"
+            [disabled]="!selectedCategory">
+          </div>
+          <div class="col-4"></div>
+        </div>
+      </div>
+    </div>
+    <!-- header buttons -->
+    <div class="row header" *ngIf="!showHideNav">
+      <div class="col-6">
+        <button class="btn btn-lg btn-success rounded-pill" (click)="toggleNav()">
+          Change Category
+        </button>
+      </div>
+      <div class="col-6 text-right">
+        <!-- <a class="btn btn-lg btn-warning rounded-pill" 
+          target="_blank"
+          [href]="sanitize('whatsapp://send?text=' + shareableLink)"
+          data-action="share/whatsapp/share">
+          <i class="fab fa-whatsapp fa-2x"></i>
+        </a>
+        &nbsp; -->
+        <button class="btn btn-lg btn-warning rounded-pill" (click)="copyLink()">
+          <i class="fas fa-link"></i>
+        </button>
+        &nbsp;
+        <button class="btn btn-lg btn-warning rounded-pill" (click)="viewCart=true">
+          <i class="fab fa-opencart"></i> 
+          {{ cartItems | sum:'totQty' }}
+        </button>
+      </div>
+    </div>
+    <!-- footer order items -->
+    <div class="row footer" *ngIf="itemSequence.length">
+      <div class="col-12">
+        <form [formGroup]="orderItemForm">
+          <div class="form-row p-1 text-danger">
+            <div class="col-6"><h3>{{ selectedItem.prodName }}</h3></div>
+            <!-- <div class="col-6"><h3 class="float-right">MRP <em>&#8377; {{ selectedItem.mrp }}/-</em></h3></div> -->
+          </div>
+          <div formArrayName="colors" 
+          *ngFor="let color of this.orderItemForm.controls.colors?.value; let i = index; trackBy:trackByFn">
+            <div class="form-row text-center" [formGroupName]="i">
+              <div class="col pt-1">
+                <span class="text-warning stock-qty">{{ items[i].color }}</span>
+              </div>
+              <div class="col">
+                <input type="text" class="form-control form-control-lg" formControlName="qty1">
+                <p class="text-warning stock-qty">{{ items[i].qty1 }}</p>
+              </div>
+              <div class="col">
+                <input type="text" class="form-control form-control-lg" formControlName="qty2">
+                <p class="text-warning stock-qty">{{ items[i].qty2 }}</p>
+              </div>
+            </div>
+              <!-- <div><h3 text-danger>Color: {{ color }}</h3></div> -->
+              <!-- <input formControlName="color" placeholder="color"> -->
+          </div>
+          <!-- <div class="form-row text-center">
+            <div class="col" *ngIf="sizes.s1 && selectedItem.qty1 != 0">
+              <span class="text-warning">{{ sizes.s1 }}</span>
+              <input type="text" class="form-control form-control-lg" 
+                [ngClass]="selectedItem.qty1 == 0 ? 'disabled' : ''"
+                formControlName="qty1"
+                (keyup)="getItemTotQty()"
+                [attr.disabled]="selectedItem.qty1 == 0 ? true : null">
+              <p class="text-warning stock-qty">{{ selectedItem.qty1 }}</p>
+            </div>
+            <div class="col" *ngIf="sizes.s2 && selectedItem.qty2 != 0">
+              <span class="text-warning">{{ sizes.s2 }}</span>
+              <input type="text" class="form-control form-control-lg" 
+                [ngClass]="selectedItem.qty2 == 0 ? 'disabled' : ''"
+                formControlName="qty2"
+                (keyup)="getItemTotQty()"
+                [attr.disabled]="selectedItem.qty2 == 0 ? true : null">
+              <p class="text-center text-warning stock-qty">{{ selectedItem.qty2 }}</p>
+            </div>
+            <div class="col" *ngIf="sizes.s3 && selectedItem.qty3 != 0">
+              <span class="text-warning">{{ sizes.s3 }}</span>
+              <input type="text" class="form-control form-control-lg" 
+                [ngClass]="selectedItem.qty3 == 0 ? 'disabled' : ''"
+                formControlName="qty3"
+                (keyup)="getItemTotQty()"
+                [attr.disabled]="selectedItem.qty3 == 0 ? true : null">
+              <p class="text-center text-warning stock-qty">{{ selectedItem.qty3 }}</p>
+            </div>
+            <div class="col" *ngIf="sizes.s4 && selectedItem.qty4 != 0">
+              <span class="text-warning">{{ sizes.s4 }}</span>
+              <input type="text" class="form-control form-control-lg" 
+                [ngClass]="selectedItem.qty4 == 0 ? 'disabled' : ''"
+                formControlName="qty4"
+                (keyup)="getItemTotQty()"
+                [attr.disabled]="selectedItem.qty4 == 0 ? true : null">
+              <p class="text-center text-warning stock-qty">{{ selectedItem.qty4 }}</p>
+            </div>
+            <div class="col" *ngIf="sizes.s5 && selectedItem.qty5 != 0">
+              <span class="text-warning">{{ sizes.s5 }}</span>
+              <input type="text" class="form-control form-control-lg"
+                [ngClass]="selectedItem.qty5 == 0 ? 'disabled' : ''" 
+                formControlName="qty5"
+                (keyup)="getItemTotQty()"
+                [attr.disabled]="selectedItem.qty5 == 0 ? true : null">
+              <p class="text-center text-warning stock-qty">{{ selectedItem.qty5 }}</p>
+            </div>
+            <div class="col" *ngIf="sizes.s6 && selectedItem.qty6 != 0">
+              <span class="text-warning">{{ sizes.s6 }}</span>
+              <input type="text" class="form-control form-control-lg" 
+                [ngClass]="selectedItem.qty6 == 0 ? 'disabled' : ''"
+                formControlName="qty6"
+                (keyup)="getItemTotQty()"
+                [attr.disabled]="selectedItem.qty6 == 0 ? true : null">
+              <p class="text-center text-warning stock-qty">{{ selectedItem.qty6 }}</p>
+            </div>
+            <div class="col" *ngIf="sizes.s7 && selectedItem.qty7 != 0">
+              <span class="text-warning">{{ sizes.s7 }}</span>
+              <input type="text" class="form-control form-control-lg" 
+                [ngClass]="selectedItem.qty7 == 0 ? 'disabled' : ''"
+                formControlName="qty7"
+                (keyup)="getItemTotQty()"
+                [attr.disabled]="selectedItem.qty7 == 0 ? true : null">
+              <p class="text-center text-warning stock-qty">{{ selectedItem.qty7 }}</p>
+            </div>
+            <div class="col" *ngIf="sizes.s8 && selectedItem.qty8 != 0">
+              <span class="text-warning">{{ sizes.s8 }}</span>
+              <input type="text" class="form-control form-control-lg" 
+                [ngClass]="selectedItem.qty8 == 0 ? 'disabled' : ''"
+                formControlName="qty8"
+                (keyup)="getItemTotQty()"
+                [attr.disabled]="selectedItem.qty8 == 0 ? true : null">
+              <p class="text-center text-warning stock-qty">{{ selectedItem.qty8 }}</p>
+            </div>
+            <div class="col" *ngIf="sizes.s9 && selectedItem.qty9 != 0">
+              <span class="text-warning">{{ sizes.s9 }}</span>
+              <input type="text" class="form-control form-control-lg" 
+                [ngClass]="selectedItem.qty9 == 0 ? 'disabled' : ''"
+                formControlName="qty9"
+                (keyup)="getItemTotQty()"
+                [attr.disabled]="selectedItem.qty9 == 0 ? true : null">
+              <p class="text-center text-warning stock-qty">{{ selectedItem.qty9 }}</p>
+            </div>
+            <div class="col" *ngIf="sizes.s10 && selectedItem.qty10 != 0">
+              <span class="text-warning">{{ sizes.s10 }}</span>
+              <input type="text" class="form-control form-control-lg"
+                [ngClass]="selectedItem.qty10 == 0 ? 'disabled' : ''"
+                formControlName="qty10"
+                (keyup)="getItemTotQty()"
+                [attr.disabled]="selectedItem.qty10 == 0 ? true : null">
+              <p class="text-center text-warning stock-qty">{{ selectedItem.qty10 }}</p>
+            </div>
+            <div class="col" *ngIf="sizes.s11 && selectedItem.qty11 != 0">
+              <span class="text-warning">{{ sizes.s11 }}</span>
+              <input type="text" class="form-control form-control-lg" 
+                [ngClass]="selectedItem.qty11 == 0 ? 'disabled' : ''"
+                formControlName="qty11"
+                (keyup)="getItemTotQty()"
+                [attr.disabled]="selectedItem.qty11 == 0 ? true : null">
+              <p class="text-center text-warning stock-qty">{{ selectedItem.qty11 }}</p>
+            </div>
+            <div class="col" *ngIf="sizes.s12 && selectedItem.qty12 != 0">
+              <span class="text-warning">{{ sizes.s12 }}</span>
+              <input type="text" class="form-control form-control-lg"
+                [ngClass]="selectedItem.qty12 == 0 ? 'disabled' : ''"
+                formControlName="qty12"
+                (keyup)="getItemTotQty()"
+                [attr.disabled]="selectedItem.qty12 == 0 ? true : null">
+              <p class="text-center text-warning stock-qty">{{ selectedItem.qty12 }}</p>
+            </div>
+            <div class="col">
+              <button class="btn btn-lg btn-warning rounded-pill float-right" style="margin-top: 25px;"
+               (click)="addItem()"
+               [disabled]="orderItemTotQty == 0 && !orderItems.submitted">
+                +
+                <i class="fas fa-circle-notch fa-spin" *ngIf="orderItems.submitted"></i>
+              </button>
+            </div>
+          </div> -->
+        </form>
+        <div class="row">
+          <div class="col-3 pb-2">
+            <button class="btn btn-lg btn-danger rounded-pill"
+            *ngIf="itemIdx > 1"
+            (click)="back()">
+              &lt;- Back
+            </button>
+          </div>
+          <div class="col-6 text-center text-warning">
+            <h4>{{ selectedCategory.name }} - {{ itemIdx }} of {{ itemSequence.length }}</h4>
+          </div>
+          <div class="col-3 pb-2 text-right">
+            <button class="btn btn-lg btn-success rounded-pill"
+            *ngIf="itemIdx != itemSequence.length"  
+            (click)="next()">
+              Next -&gt;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- cart -->
+<div class="row" *ngIf="viewCart">
+  <div class="col">
+    <h2>
+      Ordered Items
+      <a class="float-right p-1" (click)="viewCart=false"><i class="fas fa-times"></i></a>
+    </h2>
+    <table class="table table-sm table-bordered table-hover">
+      <tbody *ngFor="let c of cartCatNSizes">
+        <tr class="lead bg-warning">
+          <td colspan="18"><strong>{{ c.category }}</strong></td>
+        </tr>
+        <tr class="bg-light">
+          <td></td>
+          <td class="text-center">Item</td>
+          <td class="text-center">Color</td>
+          <td class="text-center">{{ c.s1 }}</td>
+          <td class="text-center">{{ c.s2 }}</td>
+          <td class="text-center">{{ c.s3 }}</td>
+          <td class="text-center">{{ c.s4 }}</td>
+          <td class="text-center">{{ c.s5 }}</td>
+          <td class="text-center">{{ c.s6 }}</td>
+          <td class="text-center">{{ c.s7 }}</td>
+          <td class="text-center">{{ c.s8 }}</td>
+          <td class="text-center">{{ c.s9 }}</td>
+          <td class="text-center">{{ c.s10 }}</td>
+          <td class="text-center">{{ c.s11 }}</td>
+          <td class="text-center">{{ c.s12 }}</td>
+          <td class="text-center">Total</td>
+          <td class="text-center">MRP</td>
+          <td></td>
+        </tr>
+        <tr *ngFor="let i of cartItems | filter:{'subCatID': c.subCatID}">
+          <td class="text-center">
+            <img src="{{ IMG_URL }}{{ i.groupID }}.jpeg" height="100px" alt="">
+          </td>
+          <td>{{ i.prodName }}</td>
+          <td>{{ i.color }}</td>
+          <td class="text-right">{{ i.qty1 || '-' }}</td>
+          <td class="text-right">{{ i.qty2 || '-' }}</td>
+          <td class="text-right">{{ i.qty3 || '-' }}</td>
+          <td class="text-right">{{ i.qty4 || '-' }}</td>
+          <td class="text-right">{{ i.qty5 || '-' }}</td>
+          <td class="text-right">{{ i.qty6 || '-' }}</td>
+          <td class="text-right">{{ i.qty7 || '-' }}</td>
+          <td class="text-right">{{ i.qty8 || '-' }}</td>
+          <td class="text-right">{{ i.qty9 || '-' }}</td>
+          <td class="text-right">{{ i.qty10 || '-' }}</td>
+          <td class="text-right">{{ i.qty11 || '-' }}</td>
+          <td class="text-right">{{ i.qty12 || '-' }}</td>
+          <td class="text-right">{{ i.totQty }}</td>
+          <td class="text-right"><em>&#8377; {{ i.mrp | number }}/-</em></td>
+          <td>
+            <button class="btn btn-small bg-warning rounded-pill" 
+              (click)="deleteItem(i)">
+                <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <span class="float-right bg-warning rounded-pill p-2">
+      <button class="btn btn-lg btn-success rounded-pill" 
+      (click)="finishOrder()"
+      [disabled]="orderItems.submitted">
+        <i class="fab fa-opencart"></i> {{ cartItems | sum:'totQty' }}
+        Finish
+        <i class="fas fa-circle-notch fa-spin" *ngIf="orderItems.submitted"></i>
+      </button>
+    </span>
+  </div>
+</div>
+
+<loading *ngIf="loading.items"></loading>
