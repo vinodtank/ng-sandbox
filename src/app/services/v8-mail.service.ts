@@ -8,8 +8,7 @@ import { tap, catchError } from 'rxjs/operators';
 })
 export class V8MailService {
 
-  // private API_URL: string = 'http://localhost:5700/smtpRequestHandler';
-  private API_URL: string = 'http://136.232.248.14:5700/smtpRequestHandler';
+  private API_URL: string = 'http://localhost/smtpRequestHandler';
 
   constructor(private http: HttpClient) { }
 

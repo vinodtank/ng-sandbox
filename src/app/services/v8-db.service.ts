@@ -7,7 +7,6 @@ import { tap, retry, catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class V8DataService {
-<<<<<<< HEAD
   private API_URL: string = isDevMode ? 'http://localhost/dataRequestHandler' : '/';
 
   constructor(private http: HttpClient) { }
@@ -16,16 +15,6 @@ export class V8DataService {
     dbName = dbName === undefined ? '' : dbName + '.dbo.';
     console.log(dbName);
     
-=======
-  private API_URL: string = isDevMode ? 'http://45.114.141.166:5500/dataRequestHandler' : '/';
-  // private API_URL: string = 'http://136.232.248.14:5700/dataRequestHandler';
-  // private API_URL: string = 'http://192.168.0.152:5700/dataRequestHandler';
-
-  constructor(private http: HttpClient) { }
-
-  submit(request: string, data: any, dbName?: string): Observable<any> {
-    dbName = dbName == null ? dbName : dbName + '.dbo.';
->>>>>>> 98b54e39ddcc6f2935fbebe764bc1b0186fff07c
     return this.http.post(this.API_URL,
       {
         requestName: dbName + request,
@@ -37,19 +26,12 @@ export class V8DataService {
       );
   }
 
-<<<<<<< HEAD
   edit(tableName: string, id: number, dbName?: string, dbType?: string, dbToken?: string) {
     dbName = dbName === undefined ? '' : dbName + '.dbo.';
     return this.http.post(this.API_URL,
       {
         dbType: dbType,
         dbToekn: dbToken,
-=======
-  edit(tableName: string, id: number, dbName?: string) {
-    dbName = dbName == null ? dbName : dbName + '.dbo.';
-    return this.http.post(this.API_URL,
-      {
->>>>>>> 98b54e39ddcc6f2935fbebe764bc1b0186fff07c
         requestName: dbName + 'getEditData',
         values: tableName + ',' + id
       })
@@ -61,11 +43,7 @@ export class V8DataService {
 
   // use for Select list and Dropdown controls
   selectData(tableName: string, sortColumn: string, dbName?: string) {
-<<<<<<< HEAD
     dbName = dbName === undefined ? '' : dbName + '.dbo.';
-=======
-    dbName = dbName == null ? dbName : dbName + '.dbo.';
->>>>>>> 98b54e39ddcc6f2935fbebe764bc1b0186fff07c
     return this.http.post(this.API_URL,
       {
         requestName: dbName + 'getSelectData',
@@ -78,19 +56,12 @@ export class V8DataService {
   }
 
   // get custom data
-<<<<<<< HEAD
   getData(requestName: string, data: any, dbName?: string, dbType?: string, dbToken?: string) {
     dbName = dbName === undefined ? '' : dbName + '.dbo.';
     return this.http.post(this.API_URL,
       {
         dbType: dbType,
         dbToken: dbToken,
-=======
-  getData(requestName: string, data: any, dbName?: string) {
-    dbName = dbName == null ? dbName : dbName + '.dbo.';
-    return this.http.post(this.API_URL,
-      {
->>>>>>> 98b54e39ddcc6f2935fbebe764bc1b0186fff07c
         requestName: dbName + requestName,
         values: this.normalize(data)
       })
@@ -100,27 +71,16 @@ export class V8DataService {
       );
   }
 
-<<<<<<< HEAD
   jsonImport(requestName: string, data: any, jsonData: Object, dbName?: string) {
     dbName = dbName === undefined ? '' : dbName + '.dbo.';
     return this.http.post(this.API_URL,
       {
         requestName: dbName + requestName,
-=======
-  jsonImport(request: string, data: any, jsonData: Object) {
-    return this.http.post(this.API_URL,
-      {
-        requestName: 'dbo.' + request,
->>>>>>> 98b54e39ddcc6f2935fbebe764bc1b0186fff07c
         values: data,
         jsonData: jsonData
       })
       .pipe(
-<<<<<<< HEAD
         // tap(_ => console.info(requestName + ' json data imported!')),
-=======
-        tap(_ => console.info(request + ' json data imported!')),
->>>>>>> 98b54e39ddcc6f2935fbebe764bc1b0186fff07c
         catchError(this.handleError)
       );
   }
@@ -129,11 +89,7 @@ export class V8DataService {
     let errorMessage: any;
     if (error.error instanceof ErrorEvent) {
       // Client-side errors
-<<<<<<< HEAD
       errorMessage = `error: ${error.error.message}`;
-=======
-      errorMessage = `Error: ${error.error.message}`;
->>>>>>> 98b54e39ddcc6f2935fbebe764bc1b0186fff07c
     } else {
       // Server-side errors
       errorMessage = error;
