@@ -1,0 +1,85 @@
+<!-- <div *ngIf="c.appID == one.app.ID && c.active"> -->
+  <div class="row pt-2">
+    <div class="col-sm-6">
+      <h2 class="m-0 text-dark">{{ companyForm.controls.ID.value == 0 ? 'New' : 'Update'}} {{c.name}}</h2>
+    </div>
+    <div class="col-sm-6 ">
+      <button class="btn btn-warning float-right">
+        <i class="fas fa-table"></i>
+        View
+      </button>
+    </div>
+  </div>
+
+  <!-- two columns -->
+  <h3>Two columns sample</h3>
+  <div class="row py-4 mx-auto">
+    <div class="col-md-12 mx-auto">
+      <form [formGroup]="companyForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="form-group col-sm-6 col-md-4">
+            <input type="text" id="name" class="form-control" [ngClass]="data.submitted && companyForm.controls.name.errors ? 'is-invalid' : ''" formControlName="name" required autofocus tabindex="1">
+            <label class="form-control-placeholder" for="name">Name</label>
+            <div class="invalid-feedback" *ngIf="data.submitted && companyForm.controls.name.errors">
+              <div *ngIf="companyForm.controls.name.errors.required">Name is required.</div>
+            </div>
+          </div>
+          <div class="form-group col-sm-6 col-md-4">
+            <input type="text" id="city" class="form-control" formControlName="city" 
+              required tabindex="3">
+            <label class="form-control-placeholder" for="city">City</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-sm-6 col-md-4">
+            <textarea id="address" class="form-control" formControlName="address" title="Address is required." rows="4" required tabindex="2"></textarea>
+            <label class="form-control-placeholder" for="address">Address</label>
+          </div>
+          <div class="col-sm-6 col-md-4">
+            <div class="form-group">
+              <input type="text" id="state" class="form-control" formControlName="state" required tabindex="4">
+              <label class="form-control-placeholder" for="state">State</label>
+            </div>
+            <div class="form-group">
+              <input type="text" id="country" class="form-control" formControlName="country" required tabindex="5">
+              <label class="form-control-placeholder" for="country">Country</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-sm-6 col-md-4">
+            <button type="submit" class="btn btn-success" tabindex="5">
+              Add
+              <i class="fas fa-long-arrow-alt-right"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <h3>One column sample</h3>
+  <div class="row py-4 justify-content-center">
+    <div class="col-md-4 mx-auto">
+      <form [formGroup]="companyForm">
+        <div class="form-group">
+          <input type="text" id="name" class="form-control" formControlName="name" required autofocus>
+          <label class="form-control-placeholder" for="name">Name</label>
+        </div>
+        <div class="form-group">
+          <input type="text" id="city" class="form-control" formControlName="city" required>
+          <label class="form-control-placeholder" for="city">City</label>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-sm-6 col-md-4">
+            <button type="submit" class="btn btn-success" tabindex="5">
+              Add
+              <i class="fas fa-long-arrow-alt-right"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+ 
+<!-- </div> -->

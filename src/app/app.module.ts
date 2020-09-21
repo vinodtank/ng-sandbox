@@ -17,20 +17,30 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 
 import { FilterPipe } from './pipes/filter.pipe';
 
+<<<<<<< HEAD
 import { HomeComponent } from './components/home/home.component';
+=======
+import { HomeComponent } from './home/home.component';
+import { CompanyComponent } from './company/company.component';
+import { OrderComponent } from './order/order.component';
+>>>>>>> 98b54e39ddcc6f2935fbebe764bc1b0186fff07c
 import { ViewCartComponent } from './view-cart/view-cart.component';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
 import { LoadingComponent } from './components/loading/loading.component';
 import { SumPipe } from './pipes/sum.pipe';
+<<<<<<< HEAD
 import { CategoriesComponent } from './modules/general/main/categories/categories.component';
 import { DataViewComponent } from './components/data-view/data-view.component';
 import { ContentsComponent } from './components/contents/contents.component';
+=======
+>>>>>>> 98b54e39ddcc6f2935fbebe764bc1b0186fff07c
 
 @NgModule({
   declarations: [
     AppComponent,
     FilterPipe,
     HomeComponent,
+<<<<<<< HEAD
     LoadingComponent,
     ViewCartComponent,
     SafeHtmlPipe,
@@ -38,6 +48,14 @@ import { ContentsComponent } from './components/contents/contents.component';
     CategoriesComponent,
     DataViewComponent,
     ContentsComponent
+=======
+    CompanyComponent,
+    OrderComponent,
+    LoadingComponent,
+    ViewCartComponent,
+    SafeHtmlPipe,
+    SumPipe
+>>>>>>> 98b54e39ddcc6f2935fbebe764bc1b0186fff07c
   ],
   imports: [
     BrowserModule,
