@@ -1,0 +1,22 @@
+<div *ngIf="c.appID == one.app.ID && c.active">
+  <div class="row pt-2">
+    <div class="col-sm-6">
+      <h2 class="m-0 text-dark">{{c.name}} ({{this.appForm.controls.ID.value == 0 ? 'New' : 'Update'}})</h2>
+    </div>
+    <div class="col-sm-6 ">
+      <button class="btn btn-warning float-right" (click)="toggleView()">
+        <i class="fas fa-table" *ngIf="!data.view"></i>
+        {{!this.data.view ? 'View' : ''}}
+        <i class="fas fa-times" *ngIf="data.view"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- view data -->
+  <data-view 
+    tbl="{{c.tblName}}"
+    searchStr="%"
+    (editEvent)="edit($event)"
+    *ngIf="data.view">
+  </data-view>
+</div>

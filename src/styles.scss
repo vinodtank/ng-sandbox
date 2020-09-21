@@ -1,0 +1,12 @@
+/* You can add global styles to this file, and also import other style files */
+.ng-autocomplete input[type=text] {
+    display: block;
+    width: 100%;
+    background-color: gold !important;
+}
+
+button, input[type=button] {
+    min-width: 100px;
+    padding: 0 15px;
+    border-radius: 25px !important;
+}

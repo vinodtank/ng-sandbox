@@ -1,0 +1,26 @@
+<div class="row py-4">
+    <div class="col-md-12 mx-auto">
+      <i class="fas fa-circle-notch fa-spin" *ngIf="loading"></i>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead class="thead-light">
+            <tr>
+              <th></th>
+              <th *ngFor="let h of colHeader">{{ h }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of data">
+              <td width="30px"><button class="btn btn-sm btn-warning rounded" (click)="edit(row.ID)"><i class="fas fa-edit"></i></button></td>
+              <td *ngFor="let key of colHeader">{{ row[key] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert alert-danger-light" role="alert" *ngIf="error">
+        <h4 class="alert-heading">Error</h4>
+        <hr>
+        <p>{{error}}</p>
+      </div>
+    </div>
+  </div>
